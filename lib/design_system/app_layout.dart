@@ -1,0 +1,15 @@
+import 'package:flutter/widgets.dart';
+
+abstract final class AppSpacing {
+  static const xxs = 4.0;
+  static const xs = 8.0;
+  static const sm = 12.0;
+  static const md = 16.0;
+  static const lg = 24.0;
+  static const xl = 32.0;
+}
+
+abstract final class AppRadii {
+  static const card = BorderRadius.all(Radius.circular(16));
+  static const pill = BorderRadius.all(Radius.circular(999));
+}
