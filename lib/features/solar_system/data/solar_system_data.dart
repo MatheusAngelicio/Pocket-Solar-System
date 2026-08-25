@@ -1,6 +1,7 @@
 import '../domain/celestial_body.dart';
 import '../domain/celestial_body_id.dart';
 import '../domain/celestial_body_information.dart';
+import '../domain/celestial_surface.dart';
 import 'solar_system_colors.dart';
 
 // Distâncias e velocidades visuais, ajustadas para leitura em uma tela móvel.
@@ -10,6 +11,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.sun,
       name: 'Sol',
       color: SolarSystemColors.sun,
+      surface: CelestialSurface.solar,
       radius: 1.6,
       orbitRadius: 0,
       rotationSpeed: 0.18,
@@ -29,6 +31,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.mercury,
       name: 'Mercúrio',
       color: SolarSystemColors.mercury,
+      surface: CelestialSurface.rocky,
       radius: 0.18,
       orbitRadius: 2.5,
       rotationSpeed: 1.1,
@@ -48,6 +51,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.venus,
       name: 'Vênus',
       color: SolarSystemColors.venus,
+      surface: CelestialSurface.rocky,
       radius: 0.3,
       orbitRadius: 3.45,
       rotationSpeed: 0.35,
@@ -67,6 +71,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.earth,
       name: 'Terra',
       color: SolarSystemColors.earth,
+      surface: CelestialSurface.rocky,
       radius: 0.45,
       orbitRadius: 4.5,
       rotationSpeed: 0.9,
@@ -86,6 +91,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.moon,
       name: 'Lua',
       color: SolarSystemColors.moon,
+      surface: CelestialSurface.rocky,
       radius: 0.14,
       orbitRadius: 0.8,
       rotationSpeed: 1.4,
@@ -105,6 +111,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.mars,
       name: 'Marte',
       color: SolarSystemColors.mars,
+      surface: CelestialSurface.rocky,
       radius: 0.38,
       orbitRadius: 6.4,
       rotationSpeed: 0.7,
@@ -125,6 +132,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.jupiter,
       name: 'Júpiter',
       color: SolarSystemColors.jupiter,
+      surface: CelestialSurface.gaseous,
       radius: 0.95,
       orbitRadius: 8.4,
       rotationSpeed: 1.3,
@@ -145,6 +153,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.saturn,
       name: 'Saturno',
       color: SolarSystemColors.saturn,
+      surface: CelestialSurface.gaseous,
       radius: 0.78,
       orbitRadius: 10.7,
       rotationSpeed: 1.1,
@@ -171,6 +180,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.uranus,
       name: 'Urano',
       color: SolarSystemColors.uranus,
+      surface: CelestialSurface.gaseous,
       radius: 0.6,
       orbitRadius: 13.0,
       rotationSpeed: 0.75,
@@ -191,6 +201,7 @@ List<CelestialBody> createInitialSolarSystem() {
       id: CelestialBodyId.neptune,
       name: 'Netuno',
       color: SolarSystemColors.neptune,
+      surface: CelestialSurface.gaseous,
       radius: 0.58,
       orbitRadius: 15.3,
       rotationSpeed: 0.7,

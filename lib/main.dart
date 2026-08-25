@@ -5,11 +5,13 @@ import 'design_system/app_layout.dart';
 import 'design_system/app_theme.dart';
 import 'features/solar_system/data/solar_system_data.dart';
 import 'features/solar_system/application/solar_system_camera_controller.dart';
+import 'features/solar_system/application/solar_system_quality_controller.dart';
 import 'features/solar_system/application/simulation_controller.dart';
 import 'features/solar_system/widgets/camera_actions_widget.dart';
 import 'features/solar_system/widgets/celestial_body_details_sheet_widget.dart';
 import 'features/solar_system/widgets/simulation_controls_widget.dart';
 import 'features/solar_system/widgets/solar_system_scene_widget.dart';
+import 'features/solar_system/widgets/rendering_quality_actions_widget.dart';
 import 'features/solar_system/domain/celestial_body.dart';
 
 void main() {
@@ -40,6 +42,7 @@ class SolarSystemHomePageWidget extends StatefulWidget {
 class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
   final _camera = SolarSystemCameraController();
   final _simulation = SimulationController();
+  final _quality = SolarSystemQualityController();
   late final _bodies = createInitialSolarSystem();
   CelestialBody? _selectedBody;
 
@@ -47,6 +50,7 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
   void dispose() {
     _camera.dispose();
     _simulation.dispose();
+    _quality.dispose();
     super.dispose();
   }
 
@@ -76,6 +80,7 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
             bodies: _bodies,
             simulation: _simulation,
             cameraController: _camera,
+            qualityController: _quality,
             onBodySelected: _showBodyInformation,
           ),
           SafeArea(
@@ -123,7 +128,14 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Align(
                 alignment: Alignment.topRight,
-                child: CameraActionsWidget(controller: _camera),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CameraActionsWidget(controller: _camera),
+                    const SizedBox(height: AppSpacing.sm),
+                    RenderingQualityActionsWidget(controller: _quality),
+                  ],
+                ),
               ),
             ),
           ),

@@ -8,9 +8,12 @@ import '../../../design_system/app_colors.dart';
 import '../../../design_system/app_layout.dart';
 import '../application/simulation_controller.dart';
 import '../application/solar_system_camera_controller.dart';
+import '../application/solar_system_quality_controller.dart';
+import '../data/solar_system_colors.dart';
 import '../domain/celestial_body.dart';
 import '../domain/celestial_body_id.dart';
 import '../rendering/scene_color_mapper.dart';
+import '../rendering/solar_system_texture_catalog.dart';
 
 class SolarSystemSceneWidget extends StatefulWidget {
   const SolarSystemSceneWidget({
@@ -18,12 +21,14 @@ class SolarSystemSceneWidget extends StatefulWidget {
     required this.bodies,
     required this.simulation,
     required this.cameraController,
+    required this.qualityController,
     required this.onBodySelected,
   });
 
   final List<CelestialBody> bodies;
   final SimulationController simulation;
   final SolarSystemCameraController cameraController;
+  final SolarSystemQualityController qualityController;
   final ValueChanged<CelestialBody> onBodySelected;
 
   @override
@@ -58,6 +63,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
     super.initState();
     widget.cameraController.addListener(_onCameraRequest);
     widget.simulation.addListener(_onSimulationChanged);
+    widget.qualityController.addListener(_configureSceneLook);
     _wasSimulationPaused = widget.simulation.isPaused;
     _loadScene();
   }
@@ -75,31 +81,33 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       widget.simulation.addListener(_onSimulationChanged);
       _wasSimulationPaused = widget.simulation.isPaused;
     }
+
+    if (oldWidget.qualityController != widget.qualityController) {
+      oldWidget.qualityController.removeListener(_configureSceneLook);
+      widget.qualityController.addListener(_configureSceneLook);
+      _configureSceneLook();
+    }
   }
 
   @override
   void dispose() {
     widget.cameraController.removeListener(_onCameraRequest);
     widget.simulation.removeListener(_onSimulationChanged);
+    widget.qualityController.removeListener(_configureSceneLook);
     super.dispose();
   }
 
   Future<void> _loadScene() async {
     try {
       await Scene.initializeStaticResources();
+      final textures = await SolarSystemTextureCatalog.load();
+      _configureSceneLook();
       scene.add(_cameraNode);
+      scene.add(_createStarfield(textures.starfield));
+      scene.add(_createSunlight());
 
       for (final body in widget.bodies) {
-        final material = PhysicallyBasedMaterial()
-          ..baseColorFactor = SceneColorMapper.toLinearVector4(body.color)
-          ..metallicFactor = 0
-          ..roughnessFactor = 0.8;
-
-        if (body.orbitAround == null) {
-          material
-            ..emissiveFactor = SceneColorMapper.toLinearVector4(body.color)
-            ..emissiveStrength = 1.5;
-        }
+        final material = _createBodyMaterial(body, textures);
 
         final visualNode = Node(
           name: body.name,
@@ -146,6 +154,78 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       }
     }
   }
+
+  void _configureSceneLook() {
+    final settings = scene.environmentSettings
+      ..exposure = 1.05
+      ..bloomEnabled = widget.qualityController.quality.bloomEnabled
+      ..bloomThreshold = 1.15
+      ..bloomIntensity = 0.18
+      ..bloomScatter = 0.58
+      ..ambientOcclusionEnabled = false;
+    scene.environmentSettings = settings;
+  }
+
+  PhysicallyBasedMaterial _createBodyMaterial(
+    CelestialBody body,
+    SolarSystemTextures textures,
+  ) {
+    final material =
+        PhysicallyBasedMaterial(
+            baseColorTexture: textures.forBody(body.id, body.surface),
+          )
+          // A textura da Terra já traz mares, continentes e nuvens em cores
+          // naturais. Os demais astros usam texturas neutras coloridas pela
+          // paleta do sistema.
+          ..baseColorFactor = body.id == CelestialBodyId.earth
+              ? vm.Vector4(1, 1, 1, 1)
+              : SceneColorMapper.toLinearVector4(body.color)
+          ..metallicFactor = 0
+          ..roughnessFactor = body.orbitAround == null
+              ? 0.72
+              : body.id == CelestialBodyId.earth
+              ? 0.62
+              : 0.9;
+
+    if (body.orbitAround == null) {
+      material
+        ..emissiveTexture = textures.solar
+        ..emissiveFactor = SceneColorMapper.toLinearVector4(
+          SolarSystemColors.sun,
+        )
+        ..emissiveStrength = 0.95;
+    }
+
+    return material;
+  }
+
+  Node _createStarfield(Texture2D starfield) {
+    final material = UnlitMaterial(colorTexture: starfield)
+      ..baseColorFactor = vm.Vector4(0.94, 0.97, 1, 1)
+      ..doubleSided = true;
+
+    return Node(
+        name: 'Céu estrelado',
+        mesh: Mesh(
+          SphereGeometry(radius: 55, segments: 48, rings: 24),
+          material,
+        ),
+      )
+      ..castsShadows = false
+      ..raycastable = false;
+  }
+
+  Node _createSunlight() => Node(name: 'Luz do Sol')
+    ..addComponent(
+      PointLightComponent(
+        PointLight(
+          color: SceneColorMapper.toLinearVector3(SolarSystemColors.sunlight),
+          intensity: 30,
+          range: 22,
+          falloffExponent: 1.2,
+        ),
+      ),
+    );
 
   vm.Vector3 _orbitPosition(CelestialBody body, double elapsedSeconds) {
     final angle = body.initialOrbitAngle + elapsedSeconds * body.orbitSpeed;

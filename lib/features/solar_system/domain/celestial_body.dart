@@ -2,12 +2,14 @@ import 'dart:ui';
 
 import 'celestial_body_id.dart';
 import 'celestial_body_information.dart';
+import 'celestial_surface.dart';
 
 class CelestialBody {
   const CelestialBody({
     required this.id,
     required this.name,
     required this.color,
+    required this.surface,
     required this.radius,
     required this.orbitRadius,
     required this.rotationSpeed,
@@ -21,6 +23,7 @@ class CelestialBody {
   final CelestialBodyId id;
   final String name;
   final Color color;
+  final CelestialSurface surface;
   final double radius;
   final double orbitRadius;
   final double rotationSpeed;

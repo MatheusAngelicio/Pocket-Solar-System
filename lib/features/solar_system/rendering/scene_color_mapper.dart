@@ -14,6 +14,11 @@ abstract final class SceneColorMapper {
     );
   }
 
+  static vm.Vector3 toLinearVector3(Color color) {
+    final linearColor = toLinearVector4(color);
+    return vm.Vector3(linearColor.x, linearColor.y, linearColor.z);
+  }
+
   static double _toLinear(double channel) {
     if (channel <= 0.04045) return channel / 12.92;
     return math.pow((channel + 0.055) / 1.055, 2.4).toDouble();

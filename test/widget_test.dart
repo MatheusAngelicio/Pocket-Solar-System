@@ -9,10 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pocket_solar_system/features/solar_system/application/simulation_controller.dart';
 import 'package:pocket_solar_system/features/solar_system/application/solar_system_camera_controller.dart';
+import 'package:pocket_solar_system/features/solar_system/application/solar_system_quality_controller.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_colors.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_data.dart';
 import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_id.dart';
 import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_information.dart';
+import 'package:pocket_solar_system/features/solar_system/domain/celestial_surface.dart';
 
 void main() {
   test('creates the expected initial celestial bodies', () {
@@ -53,6 +55,10 @@ void main() {
       bodies.singleWhere((body) => body.id == CelestialBodyId.earth).color,
       SolarSystemColors.earth,
     );
+    expect(
+      bodies.singleWhere((body) => body.id == CelestialBodyId.jupiter).surface,
+      CelestialSurface.gaseous,
+    );
   });
 
   test('advances the virtual clock according to its selected speed', () {
@@ -89,5 +95,15 @@ void main() {
 
     controller.showOverview();
     expect(controller.focusedBodyId, isNull);
+  });
+
+  test('switches between balanced and performance rendering profiles', () {
+    final controller = SolarSystemQualityController();
+
+    expect(controller.quality, SolarSystemQuality.balanced);
+    expect(controller.quality.bloomEnabled, isTrue);
+
+    controller.setQuality(SolarSystemQuality.performance);
+    expect(controller.quality.bloomEnabled, isFalse);
   });
 }
