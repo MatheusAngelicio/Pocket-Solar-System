@@ -4,7 +4,9 @@ import 'design_system/app_colors.dart';
 import 'design_system/app_layout.dart';
 import 'design_system/app_theme.dart';
 import 'features/solar_system/data/solar_system_data.dart';
+import 'features/solar_system/application/solar_system_camera_controller.dart';
 import 'features/solar_system/application/simulation_controller.dart';
+import 'features/solar_system/widgets/camera_actions_widget.dart';
 import 'features/solar_system/widgets/simulation_controls_widget.dart';
 import 'features/solar_system/widgets/solar_system_scene_widget.dart';
 
@@ -34,11 +36,13 @@ class SolarSystemHomePageWidget extends StatefulWidget {
 }
 
 class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
+  final _camera = SolarSystemCameraController();
   final _simulation = SimulationController();
   late final _bodies = createInitialSolarSystem();
 
   @override
   void dispose() {
+    _camera.dispose();
     _simulation.dispose();
     super.dispose();
   }
@@ -48,7 +52,11 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
     return Scaffold(
       body: Stack(
         children: [
-          SolarSystemSceneWidget(bodies: _bodies, simulation: _simulation),
+          SolarSystemSceneWidget(
+            bodies: _bodies,
+            simulation: _simulation,
+            cameraController: _camera,
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -93,6 +101,15 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
                     ),
                   ),
                 ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: CameraActionsWidget(controller: _camera),
               ),
             ),
           ),

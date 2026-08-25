@@ -40,7 +40,24 @@ class SimulationController extends ChangeNotifier {
   }
 
   void togglePause() {
-    _isPaused = !_isPaused;
+    if (_isPaused) {
+      resume();
+    } else {
+      pause();
+    }
+  }
+
+  void pause() {
+    if (_isPaused) return;
+
+    _isPaused = true;
+    notifyListeners();
+  }
+
+  void resume() {
+    if (!_isPaused) return;
+
+    _isPaused = false;
     notifyListeners();
   }
 
