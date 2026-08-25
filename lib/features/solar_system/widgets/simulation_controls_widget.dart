@@ -33,8 +33,8 @@ class SimulationControlsWidget extends StatelessWidget {
                 IconButton.filledTonal(
                   onPressed: controller.togglePause,
                   tooltip: controller.isPaused
-                      ? 'Retomar simulação'
-                      : 'Pausar simulação',
+                      ? 'Resume simulation'
+                      : 'Pause simulation',
                   icon: Icon(
                     controller.isPaused
                         ? Icons.play_arrow_rounded

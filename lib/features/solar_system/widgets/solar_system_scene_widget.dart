@@ -50,7 +50,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
   late final CameraComponent _cameraComponent = CameraComponent(
     activateOnMount: true,
   );
-  late final Node _cameraNode = Node(name: 'Câmera')
+  late final Node _cameraNode = Node(name: 'Camera')
     ..addComponent(_cameraComponent)
     ..addComponent(_orbitCamera);
   Node? _selectedNode;
@@ -114,7 +114,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
           name: body.name,
           mesh: Mesh(SphereGeometry(radius: body.radius), material),
         );
-        final orbitNode = Node(name: '${body.name} órbita')..add(visualNode);
+        final orbitNode = Node(name: '${body.name} orbit')..add(visualNode);
         _nodes[body.id] = orbitNode;
         _visualNodes[body.id] = visualNode;
         _bodiesByNode[visualNode] = body;
@@ -131,7 +131,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
         if (body.orbitAround case final parentId?) {
           final parent = _nodes[parentId];
           if (parent == null) {
-            throw StateError('Corpo-pai ausente para ${body.name}.');
+            throw StateError('Missing parent body for ${body.name}.');
           }
           parent.add(node);
         } else {
@@ -197,9 +197,9 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
         PhysicallyBasedMaterial(
             baseColorTexture: textures.forBody(body.id, body.surface),
           )
-          // A textura da Terra já traz mares, continentes e nuvens em cores
-          // naturais. Os demais astros usam texturas neutras coloridas pela
-          // paleta do sistema.
+          // Earth's texture already contains naturally colored oceans,
+          // continents, and clouds. The other bodies use neutral textures
+          // tinted by the system palette.
           ..baseColorFactor = body.id == CelestialBodyId.earth
               ? vm.Vector4(1, 1, 1, 1)
               : SceneColorMapper.toLinearVector4(body.color)
@@ -228,7 +228,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       ..doubleSided = true;
 
     return Node(
-        name: 'Céu estrelado',
+        name: 'Starfield',
         mesh: Mesh(
           SphereGeometry(radius: 55, segments: 48, rings: 24),
           material,
@@ -238,7 +238,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       ..raycastable = false;
   }
 
-  Node _createSunlight() => Node(name: 'Luz do Sol')
+  Node _createSunlight() => Node(name: 'Sunlight')
     ..addComponent(
       PointLightComponent(
         PointLight(
@@ -267,7 +267,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       ..alphaMode = AlphaMode.blend;
 
     return _createDoubleSidedRing(
-      name: 'Órbita ${body.name}',
+      name: '${body.name} orbit',
       innerRadius: body.orbitRadius - 0.018,
       outerRadius: body.orbitRadius + 0.018,
       material: material,
@@ -280,7 +280,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       ..alphaMode = AlphaMode.blend;
 
     return _createDoubleSidedRing(
-      name: 'Anéis',
+      name: 'Rings',
       innerRadius: ring.innerRadius,
       outerRadius: ring.outerRadius,
       material: material,
@@ -428,7 +428,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
           child: Semantics(
             container: true,
             liveRegion: true,
-            label: 'Não foi possível carregar a cena 3D.',
+            label: 'Unable to load the 3D scene.',
             child: Container(
               margin: const EdgeInsets.all(AppSpacing.lg),
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -450,13 +450,13 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Não foi possível carregar a cena',
+                    'Unable to load the scene',
                     style: Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Verifique sua conexão ou tente novamente.',
+                    'Check your connection and try again.',
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -464,7 +464,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
                   OutlinedButton.icon(
                     onPressed: _retryLoad,
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Tentar novamente'),
+                    label: const Text('Try again'),
                   ),
                 ],
               ),
@@ -480,13 +480,13 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
         child: Center(
           child: Semantics(
             liveRegion: true,
-            label: 'Carregando a cena 3D do Sistema Solar',
+            label: 'Loading the Solar System 3D scene',
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircularProgressIndicator(),
                 SizedBox(height: AppSpacing.md),
-                Text('Preparando o Sistema Solar...'),
+                Text('Preparing the Solar System...'),
               ],
             ),
           ),
@@ -496,9 +496,9 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
 
     return Semantics(
       container: true,
-      label: 'Cena 3D interativa do Sistema Solar',
+      label: 'Interactive 3D Solar System scene',
       hint:
-          'Arraste para girar a câmera, use dois dedos para aproximar ou afastar e toque em um astro para ver detalhes. O botão Selecionar um astro oferece uma alternativa acessível.',
+          'Drag to orbit the camera, use two fingers to zoom, and tap a celestial body to view its details. The Select a celestial body button offers an accessible alternative.',
       child: ColoredBox(
         color: AppColors.space,
         child: CameraControls(

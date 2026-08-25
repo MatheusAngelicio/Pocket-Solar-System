@@ -28,16 +28,16 @@ void main() {
     expect(
       bodies.map((body) => body.name),
       containsAll([
-        'Sol',
-        'Mercúrio',
-        'Vênus',
-        'Terra',
-        'Lua',
+        'Sun',
+        'Mercury',
+        'Venus',
+        'Earth',
+        'Moon',
         'Marte',
-        'Júpiter',
-        'Saturno',
-        'Urano',
-        'Netuno',
+        'Jupiter',
+        'Saturn',
+        'Uranus',
+        'Neptune',
       ]),
     );
     expect(
@@ -84,7 +84,7 @@ void main() {
         expect(
           visited.add(parentId),
           isTrue,
-          reason: 'A órbita não pode formar ciclos.',
+          reason: 'An orbit cannot form a cycle.',
         );
         current = bodies.singleWhere((candidate) => candidate.id == parentId);
       }
@@ -158,13 +158,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Explore o Sistema Solar'), findsOneWidget);
-    await tester.tap(find.text('Começar a explorar'));
+    expect(find.text('Explore the Solar System'), findsOneWidget);
+    await tester.tap(find.text('Start exploring'));
     await tester.pumpAndSettle();
 
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getBool(GestureTutorialWidget.preferenceKey), isTrue);
-    expect(find.text('Explore o Sistema Solar'), findsNothing);
+    expect(find.text('Explore the Solar System'), findsNothing);
   });
 
   testWidgets('selects a celestial body through the accessible list', (
@@ -188,9 +188,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byTooltip('Selecionar um astro'));
+    await tester.tap(find.byTooltip('Select a celestial body'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Terra'));
+    await tester.tap(find.text('Earth'));
     await tester.pumpAndSettle();
 
     expect(simulation.isPaused, isTrue);

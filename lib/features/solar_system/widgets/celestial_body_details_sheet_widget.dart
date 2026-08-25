@@ -69,7 +69,7 @@ class CelestialBodyDetailsSheetWidget extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    tooltip: 'Fechar informações',
+                    tooltip: 'Close details',
                     icon: const Icon(Icons.close_rounded),
                   ),
                 ],
@@ -80,20 +80,20 @@ class CelestialBodyDetailsSheetWidget extends StatelessWidget {
                 runSpacing: AppSpacing.sm,
                 children: [
                   _InformationItemWidget(
-                    label: 'Raio',
+                    label: 'Radius',
                     value: '${_formatNumber(information.radiusKm)} km',
                   ),
                   _InformationItemWidget(
-                    label: 'Distância do Sol',
+                    label: 'Distance from Sun',
                     value:
-                        '${_formatNumber(information.distanceFromSunMillionKm)} milhões km',
+                        '${_formatNumber(information.distanceFromSunMillionKm)} million km',
                   ),
                   _InformationItemWidget(
-                    label: 'Duração do dia',
+                    label: 'Day length',
                     value: information.dayDuration,
                   ),
                   _InformationItemWidget(
-                    label: 'Duração do ano',
+                    label: 'Year length',
                     value: information.yearDuration,
                   ),
                 ],
@@ -165,11 +165,11 @@ class _InformationItemWidget extends StatelessWidget {
 
 extension on CelestialBodyType {
   String get label => switch (this) {
-    CelestialBodyType.star => 'Estrela',
-    CelestialBodyType.terrestrialPlanet => 'Planeta rochoso',
-    CelestialBodyType.gasGiant => 'Gigante gasoso',
-    CelestialBodyType.iceGiant => 'Gigante de gelo',
-    CelestialBodyType.naturalSatellite => 'Satélite natural',
+    CelestialBodyType.star => 'Star',
+    CelestialBodyType.terrestrialPlanet => 'Terrestrial planet',
+    CelestialBodyType.gasGiant => 'Gas giant',
+    CelestialBodyType.iceGiant => 'Ice giant',
+    CelestialBodyType.naturalSatellite => 'Natural satellite',
   };
 }
 

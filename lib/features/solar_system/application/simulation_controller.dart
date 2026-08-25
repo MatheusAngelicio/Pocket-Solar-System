@@ -12,7 +12,7 @@ enum SimulationSpeed {
   final String label;
 }
 
-/// Mantém o relógio virtual usado por toda a simulação.
+/// Maintains the virtual clock used by the entire simulation.
 class SimulationController extends ChangeNotifier {
   Duration? _lastFrame;
   double _elapsedSeconds = 0;
@@ -23,7 +23,7 @@ class SimulationController extends ChangeNotifier {
   bool get isPaused => _isPaused;
   SimulationSpeed get speed => _speed;
 
-  /// Avança o relógio virtual usando o tempo fornecido pelo renderizador.
+  /// Advances the virtual clock using the time supplied by the renderer.
   void tick(Duration elapsed) {
     final previousFrame = _lastFrame;
     if (previousFrame == null) {

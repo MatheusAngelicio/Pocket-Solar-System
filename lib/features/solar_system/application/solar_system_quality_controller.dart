@@ -5,8 +5,8 @@ enum SolarSystemQuality {
   performance;
 
   String get label => switch (this) {
-    SolarSystemQuality.balanced => 'Equilibrado',
-    SolarSystemQuality.performance => 'Desempenho',
+    SolarSystemQuality.balanced => 'Balanced',
+    SolarSystemQuality.performance => 'Performance',
   };
 
   bool get bloomEnabled => this == SolarSystemQuality.balanced;

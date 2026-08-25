@@ -19,7 +19,7 @@ class CameraActionsWidget extends StatelessWidget {
       ),
       child: IconButton(
         onPressed: controller.showOverview,
-        tooltip: 'Voltar à visão geral',
+        tooltip: 'Return to overview',
         icon: const Icon(Icons.center_focus_strong_rounded),
       ),
     );

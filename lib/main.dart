@@ -113,7 +113,7 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Sistema Solar',
+                              'Solar System',
                               style: TextStyle(fontWeight: FontWeight.w700),
                             ),
                           ],

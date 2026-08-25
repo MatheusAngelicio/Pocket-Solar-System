@@ -20,7 +20,7 @@ class RenderingQualityActionsWidget extends StatelessWidget {
           border: Border.all(color: AppColors.primary.withValues(alpha: 0.18)),
         ),
         child: PopupMenuButton<SolarSystemQuality>(
-          tooltip: 'Qualidade gráfica: ${controller.quality.label}',
+          tooltip: 'Graphics quality: ${controller.quality.label}',
           icon: Icon(
             controller.quality == SolarSystemQuality.balanced
                 ? Icons.auto_awesome_rounded

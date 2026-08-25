@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../design_system/app_colors.dart';
 import '../../../design_system/app_layout.dart';
 
-/// Exibe as instruções de navegação apenas até o primeiro aceite do usuário.
+/// Shows navigation instructions only until the user acknowledges them.
 class GestureTutorialWidget extends StatefulWidget {
   const GestureTutorialWidget({super.key});
 
@@ -51,7 +51,7 @@ class _GestureTutorialWidgetState extends State<GestureTutorialWidget> {
               child: Semantics(
                 container: true,
                 liveRegion: true,
-                label: 'Tutorial de navegação do Sistema Solar',
+                label: 'Solar System navigation tutorial',
                 child: Container(
                   margin: const EdgeInsets.all(AppSpacing.lg),
                   constraints: const BoxConstraints(maxWidth: 420),
@@ -75,32 +75,31 @@ class _GestureTutorialWidgetState extends State<GestureTutorialWidget> {
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Explore o Sistema Solar',
+                        'Explore the Solar System',
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       const _GestureHintWidget(
                         icon: Icons.swipe_rounded,
-                        title: 'Arraste com um dedo',
-                        description: 'Gire a câmera ao redor dos planetas.',
+                        title: 'Drag with one finger',
+                        description: 'Orbit the camera around the planets.',
                       ),
                       const _GestureHintWidget(
                         icon: Icons.pinch_rounded,
-                        title: 'Use dois dedos',
-                        description: 'Aproxime ou afaste a visão.',
+                        title: 'Use two fingers',
+                        description: 'Zoom the view in or out.',
                       ),
                       const _GestureHintWidget(
                         icon: Icons.ads_click_rounded,
-                        title: 'Toque em um astro',
-                        description:
-                            'Abra seus detalhes e centralize a câmera.',
+                        title: 'Tap a celestial body',
+                        description: 'Open its details and focus the camera.',
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       SizedBox(
                         width: double.infinity,
                         child: FilledButton(
                           onPressed: _dismiss,
-                          child: const Text('Começar a explorar'),
+                          child: const Text('Start exploring'),
                         ),
                       ),
                     ],
