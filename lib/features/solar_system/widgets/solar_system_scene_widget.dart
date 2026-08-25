@@ -18,11 +18,13 @@ class SolarSystemSceneWidget extends StatefulWidget {
     required this.bodies,
     required this.simulation,
     required this.cameraController,
+    required this.onBodySelected,
   });
 
   final List<CelestialBody> bodies;
   final SimulationController simulation;
   final SolarSystemCameraController cameraController;
+  final ValueChanged<CelestialBody> onBodySelected;
 
   @override
   State<SolarSystemSceneWidget> createState() => _SolarSystemSceneState();
@@ -284,6 +286,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
     if (body != null) {
       widget.simulation.pause();
       widget.cameraController.focusOn(body.id);
+      widget.onBodySelected(body);
     }
   }
 

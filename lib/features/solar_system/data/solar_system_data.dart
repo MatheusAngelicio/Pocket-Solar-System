@@ -1,5 +1,6 @@
 import '../domain/celestial_body.dart';
 import '../domain/celestial_body_id.dart';
+import '../domain/celestial_body_information.dart';
 import 'solar_system_colors.dart';
 
 // Distâncias e velocidades visuais, ajustadas para leitura em uma tela móvel.
@@ -14,6 +15,15 @@ List<CelestialBody> createInitialSolarSystem() {
       rotationSpeed: 0.18,
       orbitSpeed: 0,
       initialOrbitAngle: 0,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.star,
+        radiusKm: 696340,
+        distanceFromSunMillionKm: 0,
+        dayDuration: '25 a 35 dias',
+        yearDuration: '—',
+        fact:
+            'O Sol concentra cerca de 99,8% de toda a massa do Sistema Solar.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.mercury,
@@ -25,6 +35,14 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.5,
       initialOrbitAngle: 1.2,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.terrestrialPlanet,
+        radiusKm: 2440,
+        distanceFromSunMillionKm: 57.9,
+        dayDuration: '58,6 dias',
+        yearDuration: '88 dias',
+        fact: 'Mercúrio é o planeta mais rápido na volta ao redor do Sol.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.venus,
@@ -36,6 +54,14 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.4,
       initialOrbitAngle: 2.5,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.terrestrialPlanet,
+        radiusKm: 6052,
+        distanceFromSunMillionKm: 108.2,
+        dayDuration: '243 dias terrestres',
+        yearDuration: '224,7 dias',
+        fact: 'Em Vênus, um dia dura mais do que um ano.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.earth,
@@ -47,6 +73,14 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.28,
       initialOrbitAngle: 0,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.terrestrialPlanet,
+        radiusKm: 6371,
+        distanceFromSunMillionKm: 149.6,
+        dayDuration: '24 horas',
+        yearDuration: '365,25 dias',
+        fact: 'A Terra é o único mundo conhecido com vida confirmada.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.moon,
@@ -58,6 +92,14 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 1.6,
       initialOrbitAngle: 0.6,
       orbitAround: CelestialBodyId.earth,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.naturalSatellite,
+        radiusKm: 1737,
+        distanceFromSunMillionKm: 149.6,
+        dayDuration: '27,3 dias',
+        yearDuration: '27,3 dias',
+        fact: 'A Lua mostra quase sempre a mesma face para a Terra.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.mars,
@@ -69,6 +111,15 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.2,
       initialOrbitAngle: 2.2,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.terrestrialPlanet,
+        radiusKm: 3390,
+        distanceFromSunMillionKm: 227.9,
+        dayDuration: '24 h e 37 min',
+        yearDuration: '687 dias',
+        fact:
+            'Marte abriga o Monte Olimpo, o maior vulcão conhecido do Sistema Solar.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.jupiter,
@@ -80,6 +131,15 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.14,
       initialOrbitAngle: 0.8,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.gasGiant,
+        radiusKm: 69911,
+        distanceFromSunMillionKm: 778.5,
+        dayDuration: '9 h e 56 min',
+        yearDuration: '11,86 anos',
+        fact:
+            'Júpiter possui a Grande Mancha Vermelha, uma tempestade maior que a Terra.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.saturn,
@@ -97,6 +157,15 @@ List<CelestialBody> createInitialSolarSystem() {
         outerRadius: 1.45,
         tiltRadians: 0.32,
       ),
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.gasGiant,
+        radiusKm: 58232,
+        distanceFromSunMillionKm: 1434,
+        dayDuration: '10 h e 42 min',
+        yearDuration: '29,45 anos',
+        fact:
+            'Os anéis de Saturno são compostos principalmente por gelo e poeira.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.uranus,
@@ -108,6 +177,15 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.08,
       initialOrbitAngle: 5.0,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.iceGiant,
+        radiusKm: 25362,
+        distanceFromSunMillionKm: 2871,
+        dayDuration: '17 h e 14 min',
+        yearDuration: '84 anos',
+        fact:
+            'Urano gira praticamente de lado em relação ao plano de sua órbita.',
+      ),
     ),
     CelestialBody(
       id: CelestialBodyId.neptune,
@@ -119,6 +197,15 @@ List<CelestialBody> createInitialSolarSystem() {
       orbitSpeed: 0.06,
       initialOrbitAngle: 4.1,
       orbitAround: CelestialBodyId.sun,
+      information: CelestialBodyInformation(
+        type: CelestialBodyType.iceGiant,
+        radiusKm: 24622,
+        distanceFromSunMillionKm: 4495,
+        dayDuration: '16 h e 6 min',
+        yearDuration: '164,8 anos',
+        fact:
+            'Netuno tem alguns dos ventos mais rápidos já medidos no Sistema Solar.',
+      ),
     ),
   ];
 }

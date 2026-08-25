@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'celestial_body_id.dart';
+import 'celestial_body_information.dart';
 
 class CelestialBody {
   const CelestialBody({
@@ -12,6 +13,7 @@ class CelestialBody {
     required this.rotationSpeed,
     required this.orbitSpeed,
     required this.initialOrbitAngle,
+    required this.information,
     this.orbitAround,
     this.ring,
   });
@@ -24,6 +26,7 @@ class CelestialBody {
   final double rotationSpeed;
   final double orbitSpeed;
   final double initialOrbitAngle;
+  final CelestialBodyInformation information;
   final CelestialBodyId? orbitAround;
   final CelestialRing? ring;
 }

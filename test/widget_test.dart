@@ -12,6 +12,7 @@ import 'package:pocket_solar_system/features/solar_system/application/solar_syst
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_colors.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_data.dart';
 import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_id.dart';
+import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_information.dart';
 
 void main() {
   test('creates the expected initial celestial bodies', () {
@@ -40,6 +41,13 @@ void main() {
     expect(
       bodies.singleWhere((body) => body.id == CelestialBodyId.saturn).ring,
       isNotNull,
+    );
+    expect(
+      bodies
+          .singleWhere((body) => body.id == CelestialBodyId.earth)
+          .information
+          .type,
+      CelestialBodyType.terrestrialPlanet,
     );
     expect(
       bodies.singleWhere((body) => body.id == CelestialBodyId.earth).color,

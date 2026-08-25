@@ -7,8 +7,10 @@ import 'features/solar_system/data/solar_system_data.dart';
 import 'features/solar_system/application/solar_system_camera_controller.dart';
 import 'features/solar_system/application/simulation_controller.dart';
 import 'features/solar_system/widgets/camera_actions_widget.dart';
+import 'features/solar_system/widgets/celestial_body_details_sheet_widget.dart';
 import 'features/solar_system/widgets/simulation_controls_widget.dart';
 import 'features/solar_system/widgets/solar_system_scene_widget.dart';
+import 'features/solar_system/domain/celestial_body.dart';
 
 void main() {
   runApp(const PocketSolarSystemAppWidget());
@@ -39,12 +41,30 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
   final _camera = SolarSystemCameraController();
   final _simulation = SimulationController();
   late final _bodies = createInitialSolarSystem();
+  CelestialBody? _selectedBody;
 
   @override
   void dispose() {
     _camera.dispose();
     _simulation.dispose();
     super.dispose();
+  }
+
+  Future<void> _showBodyInformation(CelestialBody body) async {
+    setState(() => _selectedBody = body);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.42,
+      ),
+      builder: (context) => CelestialBodyDetailsSheetWidget(body: body),
+    );
+
+    if (!mounted || _selectedBody != body) return;
+    setState(() => _selectedBody = null);
   }
 
   @override
@@ -56,6 +76,7 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
             bodies: _bodies,
             simulation: _simulation,
             cameraController: _camera,
+            onBodySelected: _showBodyInformation,
           ),
           SafeArea(
             child: Padding(
