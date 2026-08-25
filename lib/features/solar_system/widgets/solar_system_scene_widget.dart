@@ -8,6 +8,7 @@ import '../../../design_system/app_colors.dart';
 import '../../../design_system/app_layout.dart';
 import '../application/simulation_controller.dart';
 import '../domain/celestial_body.dart';
+import 'scene_color_mapper.dart';
 
 class SolarSystemSceneWidget extends StatefulWidget {
   const SolarSystemSceneWidget({
@@ -41,13 +42,13 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
 
       for (final body in widget.bodies) {
         final material = PhysicallyBasedMaterial()
-          ..baseColorFactor = _colorFromHex(body.colorHex)
+          ..baseColorFactor = SceneColorMapper.toLinearVector4(body.color)
           ..metallicFactor = 0
           ..roughnessFactor = 0.8;
 
         if (body.distanceFromSun == 0) {
           material
-            ..emissiveFactor = _colorFromHex(body.colorHex)
+            ..emissiveFactor = SceneColorMapper.toLinearVector4(body.color)
             ..emissiveStrength = 1.5;
         }
 
@@ -76,15 +77,6 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
         setState(() => _loadError = error);
       }
     }
-  }
-
-  vm.Vector4 _colorFromHex(int colorHex) {
-    return vm.Vector4(
-      ((colorHex >> 16) & 0xFF) / 255,
-      ((colorHex >> 8) & 0xFF) / 255,
-      (colorHex & 0xFF) / 255,
-      ((colorHex >> 24) & 0xFF) / 255,
-    );
   }
 
   vm.Vector3 _orbitPosition(CelestialBody body, double elapsedSeconds) {

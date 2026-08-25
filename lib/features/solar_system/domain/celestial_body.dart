@@ -1,7 +1,9 @@
+import 'dart:ui';
+
 class CelestialBody {
   const CelestialBody({
     required this.name,
-    required this.colorHex,
+    required this.color,
     required this.radius,
     required this.distanceFromSun,
     required this.rotationSpeed,
@@ -10,7 +12,7 @@ class CelestialBody {
   });
 
   final String name;
-  final int colorHex;
+  final Color color;
   final double radius;
   final double distanceFromSun;
   final double rotationSpeed;

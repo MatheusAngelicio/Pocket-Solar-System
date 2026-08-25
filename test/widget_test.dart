@@ -8,6 +8,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pocket_solar_system/features/solar_system/application/simulation_controller.dart';
+import 'package:pocket_solar_system/features/solar_system/data/solar_system_colors.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_data.dart';
 
 void main() {
@@ -18,6 +19,10 @@ void main() {
     expect(
       bodies.singleWhere((body) => body.name == 'Lua').distanceFromSun,
       0.8,
+    );
+    expect(
+      bodies.singleWhere((body) => body.name == 'Terra').color,
+      SolarSystemColors.earth,
     );
   });
 
