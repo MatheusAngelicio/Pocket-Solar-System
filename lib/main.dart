@@ -88,13 +88,6 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
                               'Sistema Solar',
                               style: TextStyle(fontWeight: FontWeight.w700),
                             ),
-                            Text(
-                              'Sol · Terra · Lua · Marte',
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 12,
-                              ),
-                            ),
                           ],
                         ),
                       ],

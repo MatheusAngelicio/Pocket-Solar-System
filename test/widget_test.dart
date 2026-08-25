@@ -11,18 +11,38 @@ import 'package:pocket_solar_system/features/solar_system/application/simulation
 import 'package:pocket_solar_system/features/solar_system/application/solar_system_camera_controller.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_colors.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_data.dart';
+import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_id.dart';
 
 void main() {
   test('creates the expected initial celestial bodies', () {
     final bodies = createInitialSolarSystem();
 
-    expect(bodies.map((body) => body.name), ['Sol', 'Terra', 'Lua', 'Marte']);
+    expect(bodies, hasLength(10));
     expect(
-      bodies.singleWhere((body) => body.name == 'Lua').distanceFromSun,
-      0.8,
+      bodies.map((body) => body.name),
+      containsAll([
+        'Sol',
+        'Mercúrio',
+        'Vênus',
+        'Terra',
+        'Lua',
+        'Marte',
+        'Júpiter',
+        'Saturno',
+        'Urano',
+        'Netuno',
+      ]),
     );
     expect(
-      bodies.singleWhere((body) => body.name == 'Terra').color,
+      bodies.singleWhere((body) => body.id == CelestialBodyId.moon).orbitAround,
+      CelestialBodyId.earth,
+    );
+    expect(
+      bodies.singleWhere((body) => body.id == CelestialBodyId.saturn).ring,
+      isNotNull,
+    );
+    expect(
+      bodies.singleWhere((body) => body.id == CelestialBodyId.earth).color,
       SolarSystemColors.earth,
     );
   });
@@ -56,10 +76,10 @@ void main() {
   test('publishes the requested camera focus', () {
     final controller = SolarSystemCameraController();
 
-    controller.focusOn('Terra');
-    expect(controller.focusedBodyName, 'Terra');
+    controller.focusOn(CelestialBodyId.earth);
+    expect(controller.focusedBodyId, CelestialBodyId.earth);
 
     controller.showOverview();
-    expect(controller.focusedBodyName, isNull);
+    expect(controller.focusedBodyId, isNull);
   });
 }
