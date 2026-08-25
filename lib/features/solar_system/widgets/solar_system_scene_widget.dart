@@ -56,6 +56,7 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
   Node? _selectedNode;
   bool _wasSimulationPaused = false;
   bool _isReady = false;
+  bool _isLoading = true;
   Object? _loadError;
 
   @override
@@ -145,14 +146,36 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
       }
 
       if (mounted) {
-        setState(() => _isReady = true);
+        setState(() {
+          _isReady = true;
+          _isLoading = false;
+        });
         _onCameraRequest();
       }
     } catch (error) {
       if (mounted) {
-        setState(() => _loadError = error);
+        setState(() {
+          _loadError = error;
+          _isLoading = false;
+        });
       }
     }
+  }
+
+  void _retryLoad() {
+    if (_isLoading) return;
+
+    scene.removeAll();
+    _nodes.clear();
+    _visualNodes.clear();
+    _bodiesByNode.clear();
+    _selectedNode = null;
+    setState(() {
+      _isReady = false;
+      _isLoading = true;
+      _loadError = null;
+    });
+    _loadScene();
   }
 
   void _configureSceneLook() {
@@ -399,43 +422,100 @@ class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
   @override
   Widget build(BuildContext context) {
     if (_loadError != null) {
-      return Center(
-        child: Container(
-          margin: const EdgeInsets.all(AppSpacing.lg),
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: const BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: AppRadii.card,
-          ),
-          child: Text(
-            'Não foi possível carregar a cena 3D: $_loadError',
-            style: const TextStyle(color: AppColors.error),
-            textAlign: TextAlign.center,
+      return ColoredBox(
+        color: AppColors.space,
+        child: Center(
+          child: Semantics(
+            container: true,
+            liveRegion: true,
+            label: 'Não foi possível carregar a cena 3D.',
+            child: Container(
+              margin: const EdgeInsets.all(AppSpacing.lg),
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              constraints: const BoxConstraints(maxWidth: 420),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: AppRadii.card,
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.7),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    color: AppColors.error,
+                    size: 36,
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'Não foi possível carregar a cena',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Verifique sua conexão ou tente novamente.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  OutlinedButton.icon(
+                    onPressed: _retryLoad,
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('Tentar novamente'),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       );
     }
 
-    if (!_isReady) {
-      return const Center(child: CircularProgressIndicator());
+    if (_isLoading || !_isReady) {
+      return ColoredBox(
+        color: AppColors.space,
+        child: Center(
+          child: Semantics(
+            liveRegion: true,
+            label: 'Carregando a cena 3D do Sistema Solar',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: AppSpacing.md),
+                Text('Preparando o Sistema Solar...'),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
-    return ColoredBox(
-      color: AppColors.space,
-      child: CameraControls(
-        controller: _orbitCamera,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTapUp: (details) =>
-                  _selectBody(details.localPosition, constraints.biggest),
-              child: SceneView(
-                scene,
-                onTick: (elapsed, _) => _animate(elapsed),
-              ),
-            );
-          },
+    return Semantics(
+      container: true,
+      label: 'Cena 3D interativa do Sistema Solar',
+      hint:
+          'Arraste para girar a câmera, use dois dedos para aproximar ou afastar e toque em um astro para ver detalhes. O botão Selecionar um astro oferece uma alternativa acessível.',
+      child: ColoredBox(
+        color: AppColors.space,
+        child: CameraControls(
+          controller: _orbitCamera,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapUp: (details) =>
+                    _selectBody(details.localPosition, constraints.biggest),
+                child: SceneView(
+                  scene,
+                  onTick: (elapsed, _) => _animate(elapsed),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

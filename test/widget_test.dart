@@ -5,7 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:pocket_solar_system/features/solar_system/application/simulation_controller.dart';
 import 'package:pocket_solar_system/features/solar_system/application/solar_system_camera_controller.dart';
@@ -15,6 +17,8 @@ import 'package:pocket_solar_system/features/solar_system/data/solar_system_data
 import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_id.dart';
 import 'package:pocket_solar_system/features/solar_system/domain/celestial_body_information.dart';
 import 'package:pocket_solar_system/features/solar_system/domain/celestial_surface.dart';
+import 'package:pocket_solar_system/features/solar_system/widgets/celestial_body_actions_widget.dart';
+import 'package:pocket_solar_system/features/solar_system/widgets/gesture_tutorial_widget.dart';
 
 void main() {
   test('creates the expected initial celestial bodies', () {
@@ -59,6 +63,32 @@ void main() {
       bodies.singleWhere((body) => body.id == CelestialBodyId.jupiter).surface,
       CelestialSurface.gaseous,
     );
+
+    final bodyIds = bodies.map((body) => body.id).toSet();
+    for (final body in bodies) {
+      expect(
+        body.orbitAround == null || bodyIds.contains(body.orbitAround),
+        isTrue,
+      );
+    }
+    expect(
+      bodies.where((body) => body.orbitAround == null).single.id,
+      CelestialBodyId.sun,
+    );
+
+    for (final body in bodies) {
+      final visited = <CelestialBodyId>{body.id};
+      var current = body;
+      while (current.orbitAround != null) {
+        final parentId = current.orbitAround!;
+        expect(
+          visited.add(parentId),
+          isTrue,
+          reason: 'A órbita não pode formar ciclos.',
+        );
+        current = bodies.singleWhere((candidate) => candidate.id == parentId);
+      }
+    }
   });
 
   test('advances the virtual clock according to its selected speed', () {
@@ -71,6 +101,15 @@ void main() {
     controller.setSpeed(SimulationSpeed.fast);
     controller.tick(const Duration(seconds: 4));
     expect(controller.elapsedSeconds, 12);
+
+    controller.tick(const Duration(seconds: 2));
+    expect(controller.elapsedSeconds, 12);
+
+    controller.tick(const Duration(seconds: 5));
+    expect(controller.elapsedSeconds, 22);
+
+    controller.reset();
+    expect(controller.elapsedSeconds, 0);
   });
 
   test('does not advance while paused', () {
@@ -105,5 +144,57 @@ void main() {
 
     controller.setQuality(SolarSystemQuality.performance);
     expect(controller.quality.bloomEnabled, isFalse);
+  });
+
+  testWidgets('shows the gesture tutorial only until it is dismissed', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(body: Stack(children: [GestureTutorialWidget()])),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Explore o Sistema Solar'), findsOneWidget);
+    await tester.tap(find.text('Começar a explorar'));
+    await tester.pumpAndSettle();
+
+    final preferences = await SharedPreferences.getInstance();
+    expect(preferences.getBool(GestureTutorialWidget.preferenceKey), isTrue);
+    expect(find.text('Explore o Sistema Solar'), findsNothing);
+  });
+
+  testWidgets('selects a celestial body through the accessible list', (
+    tester,
+  ) async {
+    final bodies = createInitialSolarSystem();
+    final simulation = SimulationController();
+    final camera = SolarSystemCameraController();
+    CelestialBodyId? selectedBodyId;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CelestialBodyActionsWidget(
+            bodies: bodies,
+            simulation: simulation,
+            cameraController: camera,
+            onBodySelected: (body) => selectedBodyId = body.id,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byTooltip('Selecionar um astro'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Terra'));
+    await tester.pumpAndSettle();
+
+    expect(simulation.isPaused, isTrue);
+    expect(camera.focusedBodyId, CelestialBodyId.earth);
+    expect(selectedBodyId, CelestialBodyId.earth);
   });
 }

@@ -8,7 +8,9 @@ import 'features/solar_system/application/solar_system_camera_controller.dart';
 import 'features/solar_system/application/solar_system_quality_controller.dart';
 import 'features/solar_system/application/simulation_controller.dart';
 import 'features/solar_system/widgets/camera_actions_widget.dart';
+import 'features/solar_system/widgets/celestial_body_actions_widget.dart';
 import 'features/solar_system/widgets/celestial_body_details_sheet_widget.dart';
+import 'features/solar_system/widgets/gesture_tutorial_widget.dart';
 import 'features/solar_system/widgets/simulation_controls_widget.dart';
 import 'features/solar_system/widgets/solar_system_scene_widget.dart';
 import 'features/solar_system/widgets/rendering_quality_actions_widget.dart';
@@ -131,6 +133,13 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    CelestialBodyActionsWidget(
+                      bodies: _bodies,
+                      simulation: _simulation,
+                      cameraController: _camera,
+                      onBodySelected: _showBodyInformation,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
                     CameraActionsWidget(controller: _camera),
                     const SizedBox(height: AppSpacing.sm),
                     RenderingQualityActionsWidget(controller: _quality),
@@ -148,6 +157,7 @@ class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
               ),
             ),
           ),
+          const GestureTutorialWidget(),
         ],
       ),
     );

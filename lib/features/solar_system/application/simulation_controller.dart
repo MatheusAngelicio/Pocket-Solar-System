@@ -26,12 +26,16 @@ class SimulationController extends ChangeNotifier {
   /// Avança o relógio virtual usando o tempo fornecido pelo renderizador.
   void tick(Duration elapsed) {
     final previousFrame = _lastFrame;
-    _lastFrame = elapsed;
-
-    if (_isPaused || previousFrame == null) return;
+    if (previousFrame == null) {
+      _lastFrame = elapsed;
+      return;
+    }
 
     final delta = elapsed - previousFrame;
     if (delta.isNegative) return;
+
+    _lastFrame = elapsed;
+    if (_isPaused) return;
 
     _elapsedSeconds +=
         delta.inMicroseconds /
