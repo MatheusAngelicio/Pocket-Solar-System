@@ -1,22 +1,31 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_scene/scene.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 import '../../../design_system/app_colors.dart';
 import '../../../design_system/app_layout.dart';
+import '../application/simulation_controller.dart';
 import '../domain/celestial_body.dart';
 
-class SolarSystemScene extends StatefulWidget {
-  const SolarSystemScene({super.key, required this.bodies});
+class SolarSystemSceneWidget extends StatefulWidget {
+  const SolarSystemSceneWidget({
+    super.key,
+    required this.bodies,
+    required this.simulation,
+  });
 
   final List<CelestialBody> bodies;
+  final SimulationController simulation;
 
   @override
-  State<SolarSystemScene> createState() => _SolarSystemSceneState();
+  State<SolarSystemSceneWidget> createState() => _SolarSystemSceneState();
 }
 
-class _SolarSystemSceneState extends State<SolarSystemScene> {
+class _SolarSystemSceneState extends State<SolarSystemSceneWidget> {
   final Scene scene = Scene();
+  final Map<String, Node> _nodes = {};
   bool _isReady = false;
   Object? _loadError;
 
@@ -30,7 +39,6 @@ class _SolarSystemSceneState extends State<SolarSystemScene> {
     try {
       await Scene.initializeStaticResources();
 
-      final nodes = <String, Node>{};
       for (final body in widget.bodies) {
         final material = PhysicallyBasedMaterial()
           ..baseColorFactor = _colorFromHex(body.colorHex)
@@ -43,18 +51,18 @@ class _SolarSystemSceneState extends State<SolarSystemScene> {
             ..emissiveStrength = 1.5;
         }
 
-        nodes[body.name] = Node(
+        _nodes[body.name] = Node(
           name: body.name,
           mesh: Mesh(SphereGeometry(radius: body.radius), material),
         );
       }
 
       for (final body in widget.bodies) {
-        final node = nodes[body.name]!;
-        node.position = vm.Vector3(body.distanceFromSun, 0, 0);
+        final node = _nodes[body.name]!;
+        node.position = _orbitPosition(body, 0);
 
-        if (body.name == 'Lua' && nodes['Terra'] != null) {
-          nodes['Terra']!.add(node);
+        if (body.name == 'Lua' && _nodes['Terra'] != null) {
+          _nodes['Terra']!.add(node);
         } else {
           scene.add(node);
         }
@@ -77,6 +85,34 @@ class _SolarSystemSceneState extends State<SolarSystemScene> {
       (colorHex & 0xFF) / 255,
       ((colorHex >> 24) & 0xFF) / 255,
     );
+  }
+
+  vm.Vector3 _orbitPosition(CelestialBody body, double elapsedSeconds) {
+    final angle = body.initialOrbitAngle + elapsedSeconds * body.orbitSpeed;
+    return vm.Vector3(
+      body.distanceFromSun * math.cos(angle),
+      0,
+      body.distanceFromSun * math.sin(angle),
+    );
+  }
+
+  void _animate(Duration elapsed) {
+    widget.simulation.tick(elapsed);
+    final elapsedSeconds = widget.simulation.elapsedSeconds;
+
+    for (final body in widget.bodies) {
+      final node = _nodes[body.name];
+      if (node == null) continue;
+
+      node.rotation = vm.Quaternion.axisAngle(
+        vm.Vector3(0, 1, 0),
+        elapsedSeconds * body.rotationSpeed,
+      );
+
+      if (body.distanceFromSun > 0) {
+        node.position = _orbitPosition(body, elapsedSeconds);
+      }
+    }
   }
 
   @override
@@ -111,6 +147,7 @@ class _SolarSystemSceneState extends State<SolarSystemScene> {
           position: vm.Vector3(0, 4.5, -15),
           target: vm.Vector3.zero(),
         ),
+        onTick: (elapsed, _) => _animate(elapsed),
       ),
     );
   }

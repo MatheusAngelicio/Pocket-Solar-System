@@ -7,6 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:pocket_solar_system/features/solar_system/application/simulation_controller.dart';
 import 'package:pocket_solar_system/features/solar_system/data/solar_system_data.dart';
 
 void main() {
@@ -18,5 +19,27 @@ void main() {
       bodies.singleWhere((body) => body.name == 'Lua').distanceFromSun,
       0.8,
     );
+  });
+
+  test('advances the virtual clock according to its selected speed', () {
+    final controller = SimulationController();
+
+    controller.tick(const Duration(seconds: 1));
+    controller.tick(const Duration(seconds: 3));
+    expect(controller.elapsedSeconds, 2);
+
+    controller.setSpeed(SimulationSpeed.fast);
+    controller.tick(const Duration(seconds: 4));
+    expect(controller.elapsedSeconds, 12);
+  });
+
+  test('does not advance while paused', () {
+    final controller = SimulationController();
+
+    controller.tick(const Duration(seconds: 1));
+    controller.togglePause();
+    controller.tick(const Duration(seconds: 3));
+
+    expect(controller.elapsedSeconds, 0);
   });
 }

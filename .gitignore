@@ -33,6 +33,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Local planning notes
+/ideias.md
+
 # Symbolication related
 app.*.symbols
 

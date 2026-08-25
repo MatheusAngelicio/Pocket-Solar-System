@@ -4,14 +4,16 @@ import 'design_system/app_colors.dart';
 import 'design_system/app_layout.dart';
 import 'design_system/app_theme.dart';
 import 'features/solar_system/data/solar_system_data.dart';
-import 'features/solar_system/presentation/solar_system_scene.dart';
+import 'features/solar_system/application/simulation_controller.dart';
+import 'features/solar_system/widgets/simulation_controls_widget.dart';
+import 'features/solar_system/widgets/solar_system_scene_widget.dart';
 
 void main() {
-  runApp(const PocketSolarSystemApp());
+  runApp(const PocketSolarSystemAppWidget());
 }
 
-class PocketSolarSystemApp extends StatelessWidget {
-  const PocketSolarSystemApp({super.key});
+class PocketSolarSystemAppWidget extends StatelessWidget {
+  const PocketSolarSystemAppWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +21,34 @@ class PocketSolarSystemApp extends StatelessWidget {
       title: 'Pocket Solar System',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
-      home: const SolarSystemHomePage(),
+      home: const SolarSystemHomePageWidget(),
     );
   }
 }
 
-class SolarSystemHomePage extends StatelessWidget {
-  const SolarSystemHomePage({super.key});
+class SolarSystemHomePageWidget extends StatefulWidget {
+  const SolarSystemHomePageWidget({super.key});
+
+  @override
+  State<SolarSystemHomePageWidget> createState() => _SolarSystemHomePageState();
+}
+
+class _SolarSystemHomePageState extends State<SolarSystemHomePageWidget> {
+  final _simulation = SimulationController();
+  late final _bodies = createInitialSolarSystem();
+
+  @override
+  void dispose() {
+    _simulation.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          SolarSystemScene(bodies: createInitialSolarSystem()),
+          SolarSystemSceneWidget(bodies: _bodies, simulation: _simulation),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -77,6 +93,15 @@ class SolarSystemHomePage extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SimulationControlsWidget(controller: _simulation),
               ),
             ),
           ),

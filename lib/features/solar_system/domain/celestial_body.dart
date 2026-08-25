@@ -5,6 +5,8 @@ class CelestialBody {
     required this.radius,
     required this.distanceFromSun,
     required this.rotationSpeed,
+    required this.orbitSpeed,
+    required this.initialOrbitAngle,
   });
 
   final String name;
@@ -12,4 +14,6 @@ class CelestialBody {
   final double radius;
   final double distanceFromSun;
   final double rotationSpeed;
+  final double orbitSpeed;
+  final double initialOrbitAngle;
 }
